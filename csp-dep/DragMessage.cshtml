@@ -1,0 +1,523 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Drag Message</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            @Html.Partial("_Menu")
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <!-- Notifications Dropdown Menu -->
+                @Html.Partial("_Notifications")
+
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        @Html.Partial("_SideBar")
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    @*<div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0 text-dark">Drag Message</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="#">App</a></li>
+                                    <li class="breadcrumb-item active">Drag Message</li>
+                                </ol>
+                            </div>
+                        </div>*@
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    @*<div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <input type="file" id="FileInput1" onchange="FileUploadEvent1()">
+                    </br>
+                    <button class="btn-info" onclick="RefreshPage()">Clear</button>
+                    <button onclick="HideMsgHtml()">Hide / Show</button>
+                </div>
+            </div>
+        </div>*@
+
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Drag the Mail</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input id="FileInput" type="file" class="custom-file-input" onchange="FileUploadEvent()">
+                                            <label class="custom-file-label" for="exampleInputFile">Drag here ...</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" onclick="RefreshPage()">Clear All</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div id="DivCreateNew" class="card col-lg-9">
+
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">Create New Incident</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <form class="form-horizontal">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Priority</label>
+                                            <div class="col-sm-6">
+                                                <select id="newIncType" class="form-control">
+                                                    <option>High</option>
+                                                    <option>Medium</option>
+                                                    <option>Low</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Category</label>
+                                            <div class="col-sm-6">
+                                                <select id="newIncCategory" class="form-control">
+                                                    <option>...</option>
+                                                    <option>General</option>
+                                                    <option>Baggage</option>
+                                                    <option>Refund</option>
+                                                    <option>DateChange</option>
+                                                    <option>Complaint</option>
+                                                    <option>Other</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Status</label>
+                                            <div class="col-sm-6">
+                                                <select id="newIncStatus" class="form-control">
+                                                    <option>Open</option>
+                                                    <option>Hold</option>
+                                                    <option>Queued</option>
+                                                    <option>Closed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Direction</label>
+                                            <div class="col-sm-6">
+                                                <select id="newIncDirection" class="form-control">
+                                                    <option value="In">In</option>
+                                                    <option value="Out">Out</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Special Remarks</label>
+                                            <textarea id="newIncRemarks" class="form-control" rows="3" placeholder="Remarks ..."></textarea>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.card-body -->
+                                    <div class="card-footer">
+                                        <button onclick="SaveNewIncBtn('redirect')" class="btn btn-primary float-right">Create & Open</button>&nbsp;&nbsp;
+                                        <button onclick="SaveNewIncBtn()" class="btn btn-info float-right">Create</button>
+
+                                        <button onclick="CancelNewIncBtn()" class="btn btn-dark">cancel</button>
+                                    </div>
+                                    <!-- /.card-footer -->
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div id="DivCreateNewBtn" class="col-lg-3">
+                            <button onclick="ShowDiv('DivCreateNew')" class="btn btn-secondary">Create Incident</button>
+                            <br /><br />
+                        </div>
+                    </div>
+
+                    <div class="card card-info collapsed-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Preview</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="previewer">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">Related Incidents</h3>
+                                </div>
+                                <div id="vueApp01" class="card-body">
+                                    <table id="example1" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>BaseEmail</th>
+                                                <th>Status</th>
+                                                <th>Priority</th>
+                                                <th>Category</th>
+                                                <th>Remarks</th>
+                                                <th>HasAttachments</th>
+                                                <th>CreatedStaff</th>
+                                                <th>CreatedDate</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop  -->
+                                            <tr v-for="item in incidents">
+                                                <td>{{item.Id}}</td>
+                                                <td>{{item.BaseEmail}}</td>
+                                                <td>{{item.Status}} </td>
+                                                <td>{{item.Type}}</td>
+                                                <td>{{item.Category}}</td>
+                                                <td>{{item.Remarks}}</td>
+                                                <td>{{item.HasAttachments}}</td>
+                                                <td>{{item.CreatedStaff}}</td>
+                                                <td>{{item.CreatedDate}}</td>
+                                                <td>
+                                                    @*@Html.ActionLink("Edit", "IncidentView", new { id = 99, cat = 999 }) |
+        @Html.ActionLink("View", "IncidentView", new { id = 99 })*@
+                                                    <button :id="item.Id" class="btn-primary" onclick="ViewIncFunc(this.id)">View</button>
+                                                    <button :id="item.Id" class="btn-primary" onclick="SaveDraggedOutlookMsgToIncident(this.id)">Assign</button>
+                                                </td>
+                                            </tr>
+                                            <!-- End Loop -->
+                                        <tbody>
+                                            @*<tfoot><tr><th>Rendering engine</th></tr></tfoot>*@
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+            <div class="p-3">
+                <h5>Title</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        @Html.Partial("_Footer")
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- custom file input js -->
+    <script src="~/Content/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <!-- SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Content/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Content/dist/js/demo.js"></script>
+
+    <!-- Vue.js v2.6.11 -->
+    <script src="~/Scripts/vue.js"></script>
+    @*<script src="~/Scripts/vueComponents.js"></script>*@
+
+    <script src="~/Scripts/app.js"></script>
+    <script>
+        document.getElementById("dragLink").classList.add('active');
+        $("#DivCreateNew").hide();
+        bsCustomFileInput.init();
+
+        function AppAlert(msg, type) {
+            if (!type) {type = 'success';}
+            swal("App Notice", msg, type);
+        }
+
+    var vueApp01 = new Vue({
+        el: "#vueApp01",
+        data: {
+            message: "Loading...",
+            incidents: []
+        },
+        updated: function () {
+
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": true
+            });
+            console.log('Table Updated.');
+        },
+        methods: {
+            ViewInc: function (id) {
+                alert(id);
+                var loc = window.location.href.replace('DragMessage','IncidentView') + '/' + id;
+                window.location.href = loc;
+            },
+            PreviewBtnEvent: function (pathval) {
+                //alert('Preview btn Clicked: ' + pathval);
+                 $.ajax({
+                    method: "GET",
+                    url: '@Url.Action("PreviewIncidentLogMsg", "IncidentServices")',
+                    data: {path : pathval}
+                 })
+                .done(function (result) {
+                    result = JSON.parse(result);
+                    AppAlert('Dragged message is Loaded. Preview is available');
+                    document.getElementById("previewer").innerHTML = result.htmlBody;
+                })
+                .fail(function (result) {
+                    console.log(result);
+                    alert(result.responseText);
+                });
+            }
+        }
+    })
+
+    function ViewIncFunc(id) {
+        var loc = window.location.href.replace('DragMessage','IncidentView') + '/' + id;
+        window.location.href = loc;
+    }
+
+    function ShowDiv(name) {
+        $("#" + name).show();
+        $("#DivCreateNewBtn").hide();
+    }
+
+    function CancelNewIncBtn() {
+        event.preventDefault();
+        $("#DivCreateNew").hide();
+        $("#DivCreateNewBtn").show();
+    }
+    function SaveNewIncBtn(type) {
+        event.preventDefault();
+        var fileUpload = document.getElementById("FileInput");
+        if (fileUpload.files.length == 0) {
+            AppAlert("First Drag the E-Mail !", 'warning');
+            return;
+        }
+        SaveNewIncident(type);
+    }
+
+        function SaveDraggedOutlookMsgToIncident(incidentId) {
+
+
+        var fileUpload = document.getElementById("FileInput");
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+        fileData.append('IncidentId', incidentId);
+        $.ajax({
+            method: "POST",
+            url: '@Url.Action("SaveDraggedOutlookMsgToIncident", "IncidentServices")',
+            contentType: false,
+            processData:false,
+            data: fileData
+        })
+            .done(function (result) {
+                AppAlert(result);//result is string here
+                setTimeout(function() {
+                            var loc = window.location.href.replace('DragMessage', 'IncidentView') + '/' + incidentId;
+                            window.location.href = loc;
+                        },3000); 
+            })
+            .fail(function (result) {
+                alert(result);
+            });
+    }
+
+    function FileUploadEvent() {
+
+        var fileUpload = document.getElementById("FileInput");
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+        fileData.append('StaffId', '18893');
+        $.ajax({
+            method: "POST",
+            url: '@Url.Action("SaveOutlookMsg", "IncidentServices")',
+            contentType: false,
+            processData:false,
+            data: fileData
+        })
+            .done(FileUploadEventSuccess)
+            .fail(function (result) {
+                alert(result);
+            });
+    }
+
+    function FileUploadEventSuccess(result) {
+        //Load Table Recent Incidents
+        result = JSON.parse(result);
+        try {
+            if (result.responseString.includes("Unsupported")) {
+                AppAlert(result.responseString , 'warning');
+                return;
+            }
+        } catch (e) { }
+
+        var emailxxx = result.SenderEmailAddress;
+        console.log(emailxxx);
+
+        $.ajax({
+            method: "GET",
+            url: '@Url.Action("GetIncidentsByBaseEmail", "TestServices")',
+            data: { email : emailxxx }
+        })
+            .done(LoadTableRecentIncidentsAreaDone)
+            .fail(function (result) {
+                alert(result);
+            });
+        // Get Preview - Show
+        console.log('Load preview from: ' + result.filePath);
+        vueApp01.PreviewBtnEvent(result.filePath);
+
+    }
+
+    function LoadTableRecentIncidentsAreaDone(result) {
+        //$("#myTable").find('tbody').empty(); // Clear Table content
+        //$.each(result, function (i, item) {
+        //    $("#myTable").find('tbody').append("<tr><td>" + item.Id + "</td><td>"+item.Category+"</td><td>"+item.Type+"</td></tr>");
+        //});
+        console.log('lolading table');
+            vueApp01.incidents = JSON.parse(result);
+            vueApp01.message = 'Loading Incidents Completed';
+    }
+
+    function RefreshPage() {
+        window.location.href = window.location.href;
+    }
+
+    </script>
+    <script>
+        function SaveNewIncident(type) {
+            console.log('Redirect: '+type);
+            var IdInfo = 11;
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("SaveNewIncident", "IncidentServices")',
+                data: {
+                    BaseEmail: $('#baseEmail').val(),
+                    Status: $('#newIncStatus').val(),
+                    Type: $('#newIncType').val(),
+                    Category: $('#newIncCategory').val(),
+                    Remarks: $('#newIncRemarks').val(),
+                    direction: $('#newIncDirection').val()
+                }
+            })
+                .done(function (data) {
+                    AppAlert(data); 
+                    if (type == 'redirect') {
+                        var id = data.split(' ')[2];
+                        setTimeout(function() {
+                            var loc = window.location.href.replace('DragMessage', 'IncidentView') + '/' + id;
+                            window.location.href = loc;
+                        },3000);   
+                    }
+                    else {
+                        $('#newIncType').val("High");
+                        $('#newIncCategory').val("");
+                        $('#newIncStatus').val("Open");
+                        $('#newIncRemarks').val("");
+                        $('#newIncDirection').val("In");
+                    }
+                    // todo: OK : Clear (hide) inputs & ++ Refresh DataTable
+                })
+                .fail(function (data) {
+                    console.log(data);
+                    AppAlert("Failed to Save Incident" , 'error');
+                });
+        }
+
+    </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,319 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>All Incidents</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            @Html.Partial("_Menu")
+
+            <!-- SEARCH FORM -->
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <!-- Notifications Dropdown Menu -->
+                @Html.Partial("_Notifications")
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        @Html.Partial("_SideBar")
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">All Incidents</h3>
+                                </div>
+                                <div id="vueApp01" class="card-body">
+                                    <table id="example1" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>BaseEmail</th>
+                                                <th>Status</th>
+                                                <th>Priority</th>
+                                                <th>Category</th>
+                                                <th>Remarks</th>
+                                                <th>CreatedStaff</th>
+                                                <th>CreatedDate</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop  -->
+                                            <tr v-for="item in incidents">
+                                                <td>{{item.Id}}</td>
+                                                <td>{{item.BaseEmail}}</td>
+                                                <td>{{item.Status}} </td>
+                                                <td>{{item.Type}}</td>
+                                                <td>{{item.Category}}</td>
+                                                <td>{{item.Remarks}}</td>
+                                                <td>{{item.CreatedStaff}}</td>
+                                                <td>{{item.CreatedDate}}</td>
+                                                <td>
+                                                    <button :id="item.Id" onclick="ViewIncident(this.id)" class="btn btn-primary">Full View</button>
+                                                    <button :id="item.Id" type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-info" onclick="fun001( this.id  )">
+                                                        Preview Inc : {{item.Id}}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <!-- End Loop -->
+                                        <tbody>
+                                            @*<tfoot><tr><th>Rendering engine</th></tr></tfoot>*@
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.col-md-6 -->
+                        @*<div class="col-lg-2">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Side Panel</h3>
+                                </div>
+                            </div>
+
+                        </div>*@
+                        <!-- /.col-md-6 -->
+                    </div>
+                    <!-- /.row -->
+                </div><!-- /.container-fluid -->
+                @* Modal for inc id view *@
+                <div class="modal fade" id="modal-info">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-gray-dark">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Incident : {{baseInfo.Id}} :: <br /> {{baseInfo.BaseEmailSubject}} </h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>
+                                            <b>Sent By</b> : {{baseInfo.BaseEmailSender}} <br />
+                                            <b>E-Mail </b>: {{baseInfo.BaseEmail}}
+                                        </p>
+                                        <p>
+                                            <b>Remarks</b> : <br />
+                                            {{baseInfo.Remarks}}
+                                        </p>
+                                        <p><b>Status </b>: {{baseInfo.Status}} </p>
+                                        <p><b>Category </b>: {{baseInfo.Category}}</p>
+                                        <p><b>Type </b>: {{baseInfo.Type}}</p>
+                                        <p>
+                                            <b>Created by </b> : <br />
+                                            <b>{{baseInfo.CreatedStaff}} </b> on [ {{GetSimpleDateTime(baseInfo.CreatedDate)}} ]
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button v-on:click="ClearIncInfo" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button :id="baseInfo.Id" type="button" class="btn btn-light" v-on:click="GoToView(baseInfo.Id)">Full View</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+
+
+
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+            <div class="p-3">
+                <h5>Title</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        @Html.Partial("_Footer")
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Content/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Content/dist/js/demo.js"></script>
+
+    <!-- Vue.js v2.6.11 -->
+    <script src="~/Scripts/vue.js"></script>
+    @*<script src="~/Scripts/vueComponents.js"></script>*@
+
+    <script src="~/Scripts/app.js"></script>
+    <!-- page script -->
+    <script>
+        document.getElementById("allIncLink").classList.add('active');
+
+        var vueApp01 = new Vue({
+            el: "#vueApp01",
+            data: {
+                message: "Loading...",
+                incidents: []
+            },
+            mounted: function () {
+                console.log('Vue instance mounted');
+                this.LoadDataTable(); 
+                console.log('data Loaded');
+            },
+            updated: function () {
+                console.log('vueApp01 Updated');
+
+                $("#example1").DataTable({
+                    "responsive": true,
+                    "autoWidth": false
+                });
+            },
+            methods: {
+                ViewIncident1: function (msg) {
+                    alert('You  for : ' + msg);
+                },
+                LoadDataTable : function() {
+                    $.ajax({
+                        method: "GET",
+                        url: '@Url.Action("GetAllIncidents", "TestServices")'
+                    })
+                        .done(function (result) {
+                            vueApp01.incidents = JSON.parse(result);
+                            vueApp01.message = 'Loading Incidents Completed';
+                        })
+                        .fail(function (result) {
+                            alert(result);
+                        });
+                }
+
+            }
+        })
+
+    var baseInfoArea = new Vue({
+        el: '#modal-info',
+        data: {
+            baseInfo: {}
+        },
+        created: function () {
+        },
+        mounted: function () {
+
+        },
+        updated: function () {
+            console.log('base inc info is Uploaded -LifeC.Hook');
+        },
+        methods: {
+            LoadBaseInfo: function (id) {
+                 //data: {incidentId : 'some e-mail'}
+                $.ajax({
+                    method: "GET",
+                    url: '@Url.Action("GetIncidentById", "TestServices")',
+                    data: {incidentId : id}
+                })
+                .done(function (result) {
+                    baseInfoArea.baseInfo = JSON.parse(result);
+                })
+                .fail(function (result) {
+                    alert(result);
+                });
+            },
+            ClearIncInfo: function () {
+                baseInfoArea.baseInfo = {};
+            },
+            GoToView: function (id) {
+                var loc = window.location.href.replace('AllIncidents', 'IncidentView') + '/' + id;
+                window.location.href = loc;
+            },
+            GetSimpleDateTime: function (date) {
+                if (date == null) {
+                    return '';
+                }
+                var d1 = date.split('T');
+                var d2 = d1[0] + ' @@ ' + d1[1].split('.')[0];
+                return d2;
+            }
+        }
+        });
+
+        function fun001(id) {
+            console.log('start to insert data to modal : Id:: ' + id);
+            baseInfoArea.LoadBaseInfo(id);
+        }
+
+        function ViewIncident(id) {
+            //vueApp01.ViewIncident1(id);
+            var loc = window.location.href.replace('AllIncidents','IncidentView') + '/' + id;
+            window.location.href = loc;
+        }
+
+        $(function () {
+
+            //$('#example2').DataTable({
+            //    "paging": true,
+            //    "lengthChange": false,
+            //    "searching": false,
+            //    "ordering": true,
+            //    "info": true,
+            //    "autoWidth": false,
+            //    "responsive": true,
+            //});
+        });
+    </script>
+
+</body>
+</html>
+
+
